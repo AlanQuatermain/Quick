@@ -46,10 +46,8 @@ final public class Example: NSObject {
         to be displayed in Xcode's test navigator.
     */
     public var name: String {
-        switch group!.name {
-        case .Some(let groupName): return "\(groupName), \(description)"
-        case .None: return description
-        }
+        guard let groupName = group!.name else { return description }
+        return "\(groupName), \(description)"
     }
 
     /**
@@ -67,19 +65,19 @@ final public class Example: NSObject {
         world.currentExampleMetadata = exampleMetadata
 
         world.exampleHooks.executeBefores(exampleMetadata)
-        group!.phase = .BeforesExecuting
+        group!.phase = .beforesExecuting
         for before in group!.befores {
             before(exampleMetadata: exampleMetadata)
         }
-        group!.phase = .BeforesFinished
+        group!.phase = .beforesFinished
 
         closure()
 
-        group!.phase = .AftersExecuting
+        group!.phase = .aftersExecuting
         for after in group!.afters {
             after(exampleMetadata: exampleMetadata)
         }
-        group!.phase = .AftersFinished
+        group!.phase = .aftersFinished
         world.exampleHooks.executeAfters(exampleMetadata)
 
         numberOfExamplesRun += 1
